@@ -1,0 +1,445 @@
+/*
+ * 기본 스타일: 모든 요소에 적용되는 박스 모델, 글꼴, 배경색 등을 설정합니다.
+ */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f4f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+    overflow-y: auto;
+}
+
+/*
+ * 앱 컨테이너 스타일: 앱의 전체적인 모양과 크기를 정의합니다.
+ */
+.todo-container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 780px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    /* 무지개색 애니메이션 정의 */
+    animation: rainbow 6s infinite linear;
+    margin-bottom: 25px;
+    font-size: 2.5em;
+    font-weight: 700;
+}
+
+/* 무지개색 애니메이션 정의 */
+@keyframes rainbow {
+    0% { color: #ff0000; }
+    16% { color: #ff7f00; }
+    33% { color: #ffff00; }
+    50% { color: #00ff00; }
+    66% { color: #0000ff; }
+    83% { color: #4b0082; }
+    100% { color: #9400d3; }
+}
+
+/*
+ * 할 일 입력 섹션 스타일: 입력 필드와 버튼을 포함합니다.
+ */
+.input-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    /* 흔들림 애니메이션을 위한 속성 추가 */
+    position: relative;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    width: 100%;
+}
+
+/* 흔들림 애니메이션 정의 */
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+
+/* 흔들림 애니메이션 적용 클래스 */
+.input-section.shake {
+    animation-name: shake;
+}
+
+
+#todoInput {
+    flex-grow: 1;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1.1em;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+#todoInput:focus {
+    border-color: #4a90e2;
+}
+
+/* 추가 버튼의 기본 스타일 (공통) */
+#addTodoBtn {
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    white-space: nowrap;
+}
+
+/* 입력 시 활성화되는 연한 초록색 그라데이션 */
+#addTodoBtn.active {
+    background: linear-gradient(45deg, #a8e6cf, #85e0b9);
+    color: #333;
+    box-shadow: 0 4px 10px rgba(168, 230, 207, 0.6);
+}
+
+#addTodoBtn.active:hover {
+    background: linear-gradient(45deg, #85e0b9, #6cd9a0);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(168, 230, 207, 0.8);
+}
+
+/* 입력 없을 때 비활성화되는 진한 빨간색 그라데이션 */
+#addTodoBtn.inactive {
+    background: linear-gradient(45deg, #ff4d4d, #cc0000);
+    color: white;
+    box-shadow: 0 4px 10px rgba(255, 77, 77, 0.4);
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+#addTodoBtn.inactive:hover {
+    background: linear-gradient(45deg, #cc0000, #990000);
+    transform: none;
+    box-shadow: 0 4px 10px rgba(255, 77, 77, 0.4);
+}
+
+
+/*
+ * 할 일 목록 스타일: 할 일 항목들을 표시하는 ul 요소입니다.
+ */
+#todoList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+}
+
+/*
+ * 개별 할 일 항목 스타일: 각 할 일(li) 요소에 적용됩니다. (포스트잇 스타일)
+ */
+.todo-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    /* background-color는 이제 JavaScript로 동적으로 설정됩니다. */
+    padding: 25px;
+    border-radius: 5px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+    /* width와 min-height는 이제 JavaScript로 동적으로 설정됩니다. */
+    /* 기본값 또는 로드 시 저장된 값으로 설정됩니다. */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: grab;
+    position: relative;
+    transform: rotate(var(--rotation, 0deg));
+    margin-bottom: 20px;
+    /* 드래그 가능하도록 설정 */
+    user-select: none;
+}
+
+.todo-item:hover {
+    transform: rotate(var(--rotation, 0deg)) scale(1.03);
+    box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* 드래그 중인 아이템 스타일 */
+.todo-item.dragging {
+    opacity: 0.4;
+    transform: rotate(var(--rotation, 0deg)) scale(0.95);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+/* 드롭될 위치를 나타내는 스타일 */
+.todo-item.drop-target-indicator {
+    border-top: 3px solid #4a90e2;
+}
+
+/* 크기 조절 핸들 스타일 */
+.resize-handle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-top-left-radius: 5px;
+    cursor: se-resize;
+    z-index: 10;
+}
+
+.resize-handle:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* 할 일 제목 스타일 (수정 불가) */
+.todo-title {
+    text-align: left;
+    font-size: 1.25em;
+    font-weight: bold;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    cursor: default;
+    word-break: break-word;
+    color: #333;
+}
+
+/* 완료된 할 일 제목 스타일 */
+.todo-title.completed {
+    text-decoration: line-through;
+    color: #888;
+    font-style: italic;
+}
+
+/* 날짜/시간 컨테이너 스타일 */
+.date-time-container {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+/* 날짜/시간 입력 필드 스타일 */
+.todo-date-input,
+.todo-time-input {
+    flex-grow: 1;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.9em;
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.7);
+    color: #333;
+    transition: border-color 0.2s ease;
+    min-width: 0;
+}
+
+.todo-date-input:focus,
+.todo-time-input:focus {
+    border-color: #4a90e2;
+}
+
+/* 할 일 내용 스타일 (수정 가능) */
+.todo-content {
+    flex-grow: 1;
+    text-align: left;
+    font-size: 1.05em;
+    line-height: 1.5;
+    margin-bottom: 12px;
+    cursor: text;
+    word-break: break-word;
+    outline: none;
+    border-bottom: 1px dashed transparent;
+    transition: border-bottom-color 0.2s ease;
+    color: #555;
+    min-height: 70px;
+    overflow: auto;
+}
+
+/* 텍스트 수정 중일 때 점선 테두리 표시 */
+.todo-content:focus {
+    border-bottom-color: #a0c4ff;
+}
+
+/*
+ * 삭제 버튼 스타일
+ */
+.delete-btn {
+    background-color: #ff6b6b;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    align-self: flex-end;
+    margin-top: auto;
+}
+
+.delete-btn:hover {
+    background-color: #e63946;
+    transform: scale(1.05);
+}
+
+/*
+ * 반응형 디자인을 위한 미디어 쿼리: 작은 화면(모바일)에 최적화합니다.
+ */
+@media (max-width: 600px) {
+    .todo-container {
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    h1 {
+        font-size: 2em;
+        margin-bottom: 20px;
+    }
+
+    .input-section {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    #addTodoBtn {
+        width: 100%;
+    }
+
+    #todoList {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .todo-item {
+        width: 90%;
+        min-height: 180px;
+        padding: 15px;
+        transform: rotate(0deg) !important;
+        box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.15);
+    }
+    .todo-item:hover {
+        transform: rotate(0deg) !important;
+        box-shadow: 5px 5px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .delete-btn {
+        width: 100%;
+        margin-left: 0;
+    }
+    /* 모바일에서는 크기 조절 핸들 숨김 */
+    .resize-handle {
+        display: none;
+    }
+}
+
+/* --- 미니 게임 관련 스타일 --- */
+.todo-app-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dino-game-container {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 600px;
+    background-color: #f0f4f8;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+#dinoCanvas {
+    border: 2px solid #333;
+    background-color: #ffffff; /* 초기 배경색 */
+    border-radius: 8px;
+    margin-bottom: 20px;
+    transition: background-color 1s ease-in-out; /* 배경색 전환 효과 추가 */
+}
+
+.game-controls {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.game-controls button {
+    background-color: #4a90e2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.game-controls button:hover {
+    background-color: #357bd8;
+    transform: translateY(-2px);
+}
+
+.game-score {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.game-over-message {
+    font-size: 2em;
+    font-weight: bold;
+    color: #ff4d4d;
+    margin-bottom: 20px;
+    display: none; /* 기본적으로 숨김 */
+}
+
+.difficulty-select-container {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.difficulty-select-container label {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #555;
+    margin-right: 10px;
+}
+
+.difficulty-select-container select {
+    padding: 8px 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    outline: none;
+    transition: border-color 0.3s ease;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.difficulty-select-container select:focus {
+    border-color: #4a90e2;
+}
